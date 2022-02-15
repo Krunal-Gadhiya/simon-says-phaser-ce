@@ -8,10 +8,6 @@ export default class GameplayState extends Phaser.State {
         this.crntSequenceSprites = [];
     }
 
-    preload() {
-
-    }
-
     create() {
         this.blue = this.game.add.sprite(300, 300, 'blue');
         this.blue.anchor.set(0.5, 0.5);
@@ -35,7 +31,7 @@ export default class GameplayState extends Phaser.State {
             font: 'Arail',
             fontSize: 50,
             fill: '#ffffff',
-            align: 'center'
+            align: 'center',
         });
         this.submit.anchor.set(0.5, 0.5);
         this.submit.inputEnabled = true;
@@ -129,9 +125,5 @@ export default class GameplayState extends Phaser.State {
             x: 1.2,
             y: 1.2
         }, 350, Phaser.Easing.Back.InOut, true, 0, 0, true);
-    }
-
-    update() {
-
     }
 }
