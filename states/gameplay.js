@@ -3,7 +3,9 @@ export default class GameplayState extends Phaser.State {
     init() {
         this.round = 1;
         this.canClick = false;
-
+        this.recordSequence = [];
+        this.crntSequence = [];
+        this.crntSequenceSprites = [];
     }
 
     preload() {
@@ -29,7 +31,7 @@ export default class GameplayState extends Phaser.State {
 
         this.blocks = [this.blue, this.yellow, this.green, this.red];
 
-        this.submit = this.game.add.text(450, 100, 'Sumbit', {
+        this.submit = this.game.add.text(450, 100, 'Submit', {
             font: 'Arail',
             fontSize: 50,
             fill: '#ffffff',
@@ -45,6 +47,8 @@ export default class GameplayState extends Phaser.State {
     }
 
     onSubmit() {
+        if (!this.canClick) return;
+
         console.log('submit tapped');
         console.log('crnt - ', this.crntSequence);
         console.log('recorded - ', this.recordSequence);
@@ -68,25 +72,38 @@ export default class GameplayState extends Phaser.State {
         }
         else {
             console.log('correct match');
+            this.nextRound();
         }
     }
 
+    nextRound() {
+        this.round++;
+        this.showPattern();
+    }
+
     showPattern() {
-        this.crntSequence = [];
         this.recordSequence = [];
+
+        const color = this.findColor();
+        this.crntSequence.push(color.colorID);
+        this.crntSequenceSprites.push(color);
+
+        const duration = 800;
+        let totalDelay = 0;
         for (let i = 0; i < this.round; i++) {
-            const color = this.findColor();
-            this.crntSequence.push(color.colorID);
-            this.bounceTheBlock(color);
+            this.game.time.events.add(duration * i, () => {
+                this.bounceTheBlock(this.crntSequenceSprites[i]);
+            });
+
+            totalDelay += duration;
         }
 
-        this.game.time.events.add(1000, () => {
+        console.log(totalDelay);
+        this.game.time.events.add(totalDelay, () => {
             this.canClick = true;
         });
 
-        this.crntSequence.forEach(block => {
-            console.log(block.colorID);
-        });
+        console.log(this.crntSequence);
     }
 
     findColor() {
